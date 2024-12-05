@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-score-web-app
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: student-score-web-app
+  template:
+    metadata:
+      labels:
+        app: student-score-web-app
+    spec:
+      containers:
+      - name: student-score-web-app
+        image: lnxadm1991/student-score-web-app:v7
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-svc
+spec:
+  selector:
+    app: student-score-web-app
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 32767
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  minReadySeconds: 30
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: "MYSQL_ROOT_PASSWORD"
+          value: "Linux.adm@1"
+        - name: "MYSQL_USER"
+          value: "webuser"
+        - name: "MYSQL_USER_PASSWORD"
+          value: "Admin@123"
+        - name: "MYSQL_DATABASE"
+          value: "myweb-db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  type: ClusterIP
+  ports:
+  - port: 3306
+    targetPort: 3306

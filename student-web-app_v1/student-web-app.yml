@@ -20,7 +20,7 @@ spec:
     spec:
       containers: 
       - name: student-web-app
-        image: lnxadm1991/student-web-app
+        image: lnxadm1991/student-web-app:v1
         ports: 
         - containerPort: 80
 ---

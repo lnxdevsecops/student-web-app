@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: student-score-web-app
+  name: student-web-app
 spec:
   replicas: 1
   strategy:
@@ -12,15 +12,15 @@ spec:
   minReadySeconds: 30
   selector:
     matchLabels:
-      app: student-score-web-app
+      app: student-web-app
   template:
     metadata:
       labels:
-        app: student-score-web-app
+        app: student-web-app
     spec:
       containers:
-      - name: student-score-web-app
-        image: lnxadm1991/student-score-web-app:v3
+      - name: student-web-app
+        image: lnxadm1991/student-web-app:v3
         ports:
         - containerPort: 80
         env:
@@ -39,7 +39,7 @@ metadata:
   name: student-svc
 spec:
   selector:
-    app: student-score-web-app
+    app: student-web-app
   type: NodePort
   ports:
   - port: 80
